@@ -35,3 +35,26 @@ class TestFiteClient():
     def test_add_fite_to_list(self):
         fite_list = self.client.fetch_fitelist("foo")
         assert self.client.add_fite("foo", ("broken home", "tea party")) is not None
+
+
+    def test_get_active_fite(self):
+        assert self.client.get_current_fite() is None
+
+        self.client.activate_list("wat")
+        assert self.client.get_current_fite() is not None
+
+
+    def test_activate_list(self):
+        assert self.client.activate_list("foo") == "foo"
+
+
+    def test_deactivate_list(self):
+        self.client.deactivate_list()
+        assert self.client.get_current_fite() is None
+
+
+    def test_vote(self):
+        self.client.activate_list("foo")
+        votes = self.client.vote("meeseeks", 0, "left")
+        assert None is not votes
+

@@ -21,7 +21,6 @@ class FiteListClient(object):
         )
 
         return new_fite
-        return new_fite is not None
 
 
     def get_fitelist(self, list_name):
@@ -31,3 +30,28 @@ class FiteListClient(object):
             return None
 
         return FiteListModel(fite)
+
+    def get_current_list(self):
+        return self.fitelist.find_one({'is_active': True})
+
+    def deactivate_list(self):
+        return self.fitelist.update_many({'is_active': True}, {'$set': {'is_active': False}})
+
+    def vote(self, nick, fite_id, item):
+        current_list = self.get_current_list()
+        return self.fitelist.find_one_and_update(
+            {'name': current_list['name']}, 
+            {'$addToSet': {u'fites{}.{}.votes'.format(fite_id, item): nick}},
+            return_document=ReturnDocument.AFTER
+                )
+
+    def activate_list(self, list_name):
+        fite = self.get_fitelist(list_name)
+
+        if fite is not None:
+            self.deactivate_list()
+            self.fitelist.find_one_and_update({'name': list_name}, {'$set': {'is_active': True}})
+
+            return fite.name
+
+

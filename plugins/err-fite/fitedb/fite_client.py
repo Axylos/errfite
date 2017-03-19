@@ -28,6 +28,24 @@ class FiteClient(object):
         fite = FiteModel.make_fite(fite)
         return self.fite_list_client.add_fite(list_name, fite)
 
+    def get_current_fite(self):
+        return self.fite_list_client.get_current_list()
+
+    def activate_list(self, list_name):
+        return self.fite_list_client.activate_list(list_name)
+
+    def deactivate_list(self):
+        return self.fite_list_client.deactivate_list()
+
+    def vote(self, nick, fite_id, item):
+        fite_data = self.fite_list_client.get_current_list()
+        fite_list = FiteListModel(fite_data)
+
+        if fite_list and fite_list.is_valid_idx(fite_id, nick):
+            return self.fite_list_client.vote(nick, fite_id, item)
+
+        return None
+
     def clean_db(self):
         self.client.drop_database(DB_NAME)
 

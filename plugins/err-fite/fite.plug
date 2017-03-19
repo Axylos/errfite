@@ -1,0 +1,9 @@
+[Core]
+Name = ErrFite
+Module = err-fite
+
+[Documentation]
+Description = a polling chatbot for conceptual warfare
+
+[Python]
+Version = 2+
